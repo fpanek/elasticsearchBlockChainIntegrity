@@ -40,10 +40,4 @@ def create_and_store_hash():
         }
         accessElastic.update_document("10.0.13.3", "example", document_id, document_already_read)
 
-def updating_test_document():
-    document_body = {
-        "integrity_checksum_created": True
-    }
-    response = accessElastic.update_document("10.0.13.3", "example", "M8mmu48BV3C7FM5ly935", document_body)
-    print(response)
 

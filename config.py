@@ -13,4 +13,5 @@ etherum_node_port="7545"
 
 ##test parameters
 test_index = "test-2024-05"
-existing_contract_address = "0x1234567890abcdef1234567890abcdef12345678"  # Example address
+#existing_contract_address = "0x1234567890abcdef1234567890abcdef12345678"
+existing_contract_address = "0x1Fd96C0e680bc2904dFf96957EF3f421dF244C8E" #from ganache

@@ -54,7 +54,10 @@ def get_deployed_bytecode(contract_address):
     return w3.eth.get_code(formatted_address)
 
 def contains_bytecode(full_bytecode, deployed_bytecode):
-    return deployed_bytecode in full_bytecode
+    # Return False if deployed_bytecode is empty or not in full_bytecode
+    if not deployed_bytecode or deployed_bytecode not in full_bytecode:
+        return False
+    return True
 
 def deploy_smart_contract(bytecode, abi):
     contract = w3.eth.contract(abi=abi, bytecode=bytecode)
@@ -77,10 +80,12 @@ def verify_and_deploy_smart_contract():
         deployed_bytecode = get_deployed_bytecode(contract_address).hex()[2:]  # Remove '0x'
         compiled_bytecode = compiled_bytecode[2:]  # Remove '0x' from compiled bytecode for consistency
         if contains_bytecode(compiled_bytecode, deployed_bytecode):
+            logging.debug(f"{compiled_bytecode}")
+            logging.debug(f"{deployed_bytecode}")
             logging.debug("The deployed contract contains the compiled bytecode. - no action required...")
             return contract_address
         else:
-            logging.info("Bytecode mismatch. Deploying the latest version...")
+            logging.info("Bytecode mismatch or empty deployed bytecode. Deploying the latest version...")
             new_contract_address = deploy_smart_contract(compiled_bytecode, abi)
             logging.info(f"New contract deployed at address: {new_contract_address}")
             with open('config.py', 'w') as f:
