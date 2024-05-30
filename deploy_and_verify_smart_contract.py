@@ -3,6 +3,7 @@ import warnings
 from solcx import compile_standard, install_solc
 from web3 import Web3
 import config
+import json
 
 warnings.filterwarnings("ignore", category=UserWarning, module='urllib3')
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -41,6 +42,8 @@ def compile_contract(contract_file, solc_version):
     contract_name = contract_file.split('.')[0]
     bytecode = compiled_sol['contracts'][contract_file][contract_name]['evm']['bytecode']['object']
     abi = compiled_sol['contracts'][contract_file][contract_name]['abi']
+    with open('abi.json', 'w') as abi_file:
+        json.dump(abi, abi_file)
     return bytecode, abi
 
 def format_address(address):

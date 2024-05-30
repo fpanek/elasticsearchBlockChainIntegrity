@@ -12,6 +12,12 @@ logging.basicConfig(
   datefmt='%Y-%m-%d %H:%M:%S'
 )
 
+ganache_path = f"http://{config.etherum_node_ip}:{config.etherum_node_port}"
+CONTRACT_FILE = "DocumentIntegrity.sol"
+
+ganache_path = f"http://{config.etherum_node_ip}:{config.etherum_node_port}"
+etherum_client = Web3(Web3.HTTPProvider(ganache_path))
+
 def iterate_through_all_blocks():
     ganache_path = f"http://{config.etherum_node_ip}:{config.etherum_node_port}"
     etherum_client = Web3(Web3.HTTPProvider(ganache_path))
@@ -60,12 +66,22 @@ def compile_and_deploy(smart_contract_file):
 
 def verify_contract(address):
     ganache_path = f"http://{config.etherum_node_ip}:{config.etherum_node_port}"
-    w3 = Web3(Web3.HTTPProvider(ganache_path))
-    return w3.eth.contract(address=address, abi=abi)
+    etherum_client = Web3(Web3.HTTPProvider(ganache_path))
+    return etherum_client.eth.contract(address=address, abi=abi)
 
 def set_key_value(contract, key, value):
     tx_hash = contract.functions.set(key, value).transact()
-    w3.eth.wait_for_transaction_receipt(tx_hash)
+    etherum_client.eth.wait_for_transaction_receipt(tx_hash)
 
 def get_value(contract, key):
     return contract.functions.get(key).call()
+
+def add_checksum_entry(contract, _index, _documentId, _checksum):
+    tx_hash = contract.functions.addChecksumEntry(_index, _documentId, _checksum).transact({'from': etherum_client.eth.accounts[0]})
+    etherum_client.eth.wait_for_transaction_receipt(tx_hash)
+
+def get_checksum_entry(contract, _index, _documentId):
+    return contract.functions.getChecksumEntry(_index, _documentId).call()
+
+def get_all_checksums(contract, _index):
+    return contract.functions.getAllChecksums(_index).call()

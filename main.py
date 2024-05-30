@@ -1,3 +1,4 @@
+import secure_integrity
 import setup
 
 import config
@@ -52,5 +53,6 @@ if __name__ == '__main__':
     #contract_address = "0xBF5B6ED6c1D001b9E151053872B89c6ba36A09eA"
     #contract_result = test_contract_exist(contract_address)
     #test_store_and_retrieve_value_from_contract()
-    setup.setup()
+    #setup.setup()
+    secure_integrity.create_and_store_hash()
 
