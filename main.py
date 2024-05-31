@@ -7,7 +7,7 @@ def insert_test_document():
     document_body = {
         "@timestamp": "2024-05-31T12:36:56Z",
         "title": "Testing insert fucntionality2",
-        "content": "Test insert 0017"
+        "content": "Test insert 0025"
     }
     response = accessElastic.insert_document("10.0.13.3", "example", "", document_body)
     print(response)
@@ -22,9 +22,9 @@ def updating_test_document():
 
 def updating_test_document_some_other_data():
     document_body = {
-        "content": "tampered data"
+        "content": "tampered data 1"
     }
-    response = accessElastic.update_document("10.0.13.3", "example", "QcnQzY8BV3C7FM5l190G", document_body)
+    response = accessElastic.update_document("10.0.13.3", "example", "SMnGzo8BV3C7FM5lI92G", document_body)
     print(response)
 
 def get_test_result_from_database():
@@ -50,7 +50,7 @@ def test_store_and_retrieve_value_from_contract(contract):
 if __name__ == '__main__':
     #insert_test_document()
     #updating_test_document()
-    #updating_test_document_some_other_data()
+    updating_test_document_some_other_data()
     #get_test_result_from_database()
     #accessEtherum.iterate_through_all_blocks()
     #test_deploy_smart_contract();

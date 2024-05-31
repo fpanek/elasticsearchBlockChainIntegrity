@@ -3,10 +3,9 @@ import accessElastic
 import logging
 import json
 import accessEtherum
-import config
+import config.config as config
 import createChecksum
 from web3 import Web3
-
 
 logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
 
@@ -25,19 +24,24 @@ def load_contract(contract_address, abi_path):
 
 def create_and_store_hash():
     query = {"bool": {"must_not": [{"exists": {"field": "integrity_checksum_created"}}]}}
-    response = accessElastic.return_result_from_database("10.0.13.3", query, "example")
-    for hit in response['hits']['hits']:
-        document_id = hit['_id']  # Extract the document ID
-        timestamp=hit['_source']['@timestamp']
-        title=hit['_source']['title']
-        content=hit['_source']['content']
-        logging.debug(f"found document: {document_id} {timestamp}; {title}; {content}")
-        checksum = createChecksum.create_checksum(timestamp, title, content)
-        contract=load_contract(Web3.to_checksum_address(config.existing_contract_address), "config/abi.json")
-        accessEtherum.add_checksum_entry(contract, "example", document_id, checksum)
-        document_already_read = {
-        "integrity_checksum_created": True
-        }
-        accessElastic.update_document("10.0.13.3", "example", document_id, document_already_read)
+    for index in config.monitored_indices:
+        logging.debug(f"Verifying index: {index}")
+        response = accessElastic.return_result_from_database("10.0.13.3", query, index)
+        try:
+            for hit in response['hits']['hits']:
+                document_id = hit['_id']  # Extract the document ID
+                timestamp=hit['_source']['@timestamp']
+                title=hit['_source']['title']
+                content=hit['_source']['content']
+                logging.debug(f"found document: {document_id} {timestamp}; {title}; {content}")
+                checksum = createChecksum.create_checksum(timestamp, title, content)
+                contract=load_contract(Web3.to_checksum_address(config.existing_contract_address), "../config/abi.json")
+                accessEtherum.add_checksum_entry(contract, index, document_id, checksum)
+                document_already_read = {
+                "integrity_checksum_created": True
+                }
+                accessElastic.update_document("10.0.13.3", index, document_id, document_already_read)
+        except Exception as e:
+            logging.error("Error iterating through returned data", e)
 
 

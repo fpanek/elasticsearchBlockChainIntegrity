@@ -20,7 +20,10 @@ def return_result_from_database(ip, query, index_name):
         basic_auth=(config.database_username, config.database_password)
     )
     logging.debug(f"Executing get query: {query} onto index: {index_name}")
-    response = client.search(index=index_name, query=query)
+    try:
+        response = client.search(index=index_name, query=query)
+    except Exception as e:
+        response = e
     return response
 
 def return_result_from_database_using_body(ip, body, index_name):

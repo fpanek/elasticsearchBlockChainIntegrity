@@ -39,13 +39,12 @@ def query_specific_index_and_id(ip, index, _id):
     return response
 
 def verify_integrity(index_name):
-    contract = load_contract(Web3.to_checksum_address(config.existing_contract_address), "config/abi.json")
+    contract = load_contract(Web3.to_checksum_address(config.existing_contract_address), "../config/abi.json")
     data = accessEtherum.get_all_checksums(contract, index_name)
     results = []
     for i in range(len(data[0])):
         results.append({"_id": data[0][i], "checksum": data[1][i]})
     blockhain_checksum_id = json.dumps({"results": results}, indent=4)
-    #print(blockhain_checksum_id)
     blockhain_checksum_id_json = json.loads(blockhain_checksum_id)
     for item in blockhain_checksum_id_json['results']:
         _id = item['_id']
@@ -65,17 +64,7 @@ def verify_integrity(index_name):
         else:
             logging.error(f"Document {_id} was altered after creating the checksum!")
 
-    #print("elastic result---")
-    #print(elastic_result)
-    #if elastic_result['hits']['hits']:  # Check if there are hits
-    #    first_hit = elastic_result['hits']['hits'][0]['_source']
-    #    timestamp = first_hit['@timestamp']
-    #    title = first_hit['title']
-    #    content = first_hit['content']
-    #else:
-    #    logging.debug("Error decoding document")
-    #checksum_elastic = createChecksum.create_checksum(timestamp, title, content)
-    #print(checksum_elastic)
+
 
 
 

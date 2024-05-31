@@ -2,7 +2,7 @@ import logging
 from web3 import Web3
 import deploy_and_verify_smart_contract
 import accessElastic
-import config
+import config.config as config
 
 logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
 
