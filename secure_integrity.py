@@ -27,8 +27,10 @@ def create_and_store_hash():
     for index in config.monitored_indices:
         logging.debug(f"Verifying index: {index}")
         response = accessElastic.return_result_from_database("10.0.13.3", query, index)
+        x =0
         try:
             for hit in response['hits']['hits']:
+                x = x+1
                 document_id = hit['_id']  # Extract the document ID
                 timestamp=hit['_source']['@timestamp']
                 title=hit['_source']['title']
@@ -43,5 +45,7 @@ def create_and_store_hash():
                 accessElastic.update_document("10.0.13.3", index, document_id, document_already_read)
         except Exception as e:
             logging.error("Error iterating through returned data", e)
+        print("--------------")
+        print(f"found Documetns: {x}")
 
 

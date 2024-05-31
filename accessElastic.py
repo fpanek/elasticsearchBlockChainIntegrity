@@ -21,7 +21,7 @@ def return_result_from_database(ip, query, index_name):
     )
     logging.debug(f"Executing get query: {query} onto index: {index_name}")
     try:
-        response = client.search(index=index_name, query=query)
+        response = client.search(index=index_name, size=config.documents_to_query_at_once, query=query)
     except Exception as e:
         response = e
     return response
@@ -36,6 +36,23 @@ def return_result_from_database_using_body(ip, body, index_name):
     )
     logging.debug(f"Executing get query: {body} onto index: {index_name}")
     response = client.search(index=index_name, body=body)
+    return response
+
+
+def return_limited_result_from_database(ip, query, index_name, size):
+    logging.debug(f"Connecting to elastic database: {ip}, {query}, {index_name}")
+    host_url = f"https://{ip}:{config.database_port}"
+    client = Elasticsearch(
+        [host_url],
+        verify_certs=config.verify_certs,
+        basic_auth=(config.database_username, config.database_password)
+    )
+    logging.debug(f"Executing get query: {query} onto index: {index_name}")
+    try:
+        response = client.search(index=index_name, size=size, body=query)
+    except Exception as e:
+        logging.error(f"Search query failed: {str(e)}")
+        response = e
     return response
 
 def insert_document(ip, index_name, document_id, document_body): #if document_id is empty a new documment id is automatically created if a new document is inserted

@@ -12,7 +12,11 @@ logging.basicConfig(
 
 
 if __name__ == '__main__':
+    start_time = time.time()
     secure_integrity.create_and_store_hash()
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    logging.info(f"Securing integrity took {elapsed_time} seconds")
     #while True:
     #    secure_integrity.create_and_store_hash()
     #    time.sleep(1)
