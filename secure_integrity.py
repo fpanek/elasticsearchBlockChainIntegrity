@@ -33,7 +33,7 @@ def create_and_store_hash():
         content=hit['_source']['content']
         logging.debug(f"found document: {document_id} {timestamp}; {title}; {content}")
         checksum = createChecksum.create_checksum(timestamp, title, content)
-        contract=load_contract(Web3.to_checksum_address(config.existing_contract_address), "abi.json")
+        contract=load_contract(Web3.to_checksum_address(config.existing_contract_address), "config/abi.json")
         accessEtherum.add_checksum_entry(contract, "example", document_id, checksum)
         document_already_read = {
         "integrity_checksum_created": True

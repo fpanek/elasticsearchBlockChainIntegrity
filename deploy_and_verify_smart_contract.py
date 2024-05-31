@@ -15,7 +15,7 @@ logging.basicConfig(
 )
 
 ganache_path = f"http://{config.etherum_node_ip}:{config.etherum_node_port}"
-CONTRACT_FILE = "DocumentIntegrity.sol"
+CONTRACT_FILE = "config/DocumentIntegrity.sol"
 SOLC_VERSION = "0.8.13"
 
 w3 = Web3(Web3.HTTPProvider(ganache_path))
@@ -42,7 +42,7 @@ def compile_contract(contract_file, solc_version):
     contract_name = contract_file.split('.')[0]
     bytecode = compiled_sol['contracts'][contract_file][contract_name]['evm']['bytecode']['object']
     abi = compiled_sol['contracts'][contract_file][contract_name]['abi']
-    with open('abi.json', 'w') as abi_file:
+    with open('config/abi.json', 'w') as abi_file:
         json.dump(abi, abi_file)
     return bytecode, abi
 
@@ -74,7 +74,7 @@ def deploy_smart_contract(bytecode, abi):
 
 
 def update_contract_address(new_address):
-    config_file_path = 'config.py'
+    config_file_path = 'config/config.py'
     with open(config_file_path, 'r') as file:
         lines = file.readlines()
     address_updated = False

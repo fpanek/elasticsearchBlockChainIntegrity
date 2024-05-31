@@ -3,7 +3,7 @@ import accessElastic
 import logging
 import json
 import accessEtherum
-import config
+import config.config as config
 import createChecksum
 from web3 import Web3
 import accessElastic
@@ -15,6 +15,7 @@ logging.basicConfig(
   level=logging.DEBUG,
   datefmt='%Y-%m-%d %H:%M:%S'
 )
+
 
 ganache_path = f"http://{config.etherum_node_ip}:{config.etherum_node_port}"
 w3 = Web3(Web3.HTTPProvider(ganache_path))
@@ -38,7 +39,7 @@ def query_specific_index_and_id(ip, index, _id):
     return response
 
 def verify_integrity(index_name):
-    contract = load_contract(Web3.to_checksum_address(config.existing_contract_address), "abi.json")
+    contract = load_contract(Web3.to_checksum_address(config.existing_contract_address), "config/abi.json")
     data = accessEtherum.get_all_checksums(contract, index_name)
     results = []
     for i in range(len(data[0])):

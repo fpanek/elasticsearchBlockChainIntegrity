@@ -1,4 +1,4 @@
-import config
+import config.config as config
 from elasticsearch import Elasticsearch
 
 

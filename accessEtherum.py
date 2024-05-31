@@ -1,4 +1,4 @@
-import config
+import config.config as config
 from web3 import Web3
 from solcx import compile_standard, install_solc
 import os
@@ -13,7 +13,8 @@ logging.basicConfig(
 )
 
 ganache_path = f"http://{config.etherum_node_ip}:{config.etherum_node_port}"
-CONTRACT_FILE = "DocumentIntegrity.sol"
+CONTRACT_FILE = "config/DocumentIntegrity.sol"
+
 
 ganache_path = f"http://{config.etherum_node_ip}:{config.etherum_node_port}"
 etherum_client = Web3(Web3.HTTPProvider(ganache_path))

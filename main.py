@@ -1,11 +1,5 @@
-import secure_integrity
-import setup
-
-import config
 import accessElastic
-import createChecksum
 import accessEtherum
-import setup
 import verifyIntegrity
 
 
@@ -65,5 +59,5 @@ if __name__ == '__main__':
     #test_store_and_retrieve_value_from_contract()
     #setup.setup()
     #secure_integrity.create_and_store_hash()
-    verifyIntegrity.verify_integrity("example")
+    #verifyIntegrity.verify_integrity("example")
 
