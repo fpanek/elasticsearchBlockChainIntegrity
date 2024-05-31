@@ -11,11 +11,11 @@ import verifyIntegrity
 
 def insert_test_document():
     document_body = {
-        "@timestamp": "2024-05-30T12:34:56Z",
-        "title": "Testing insert functionality",
-        "content": "Test insert 0002"
+        "@timestamp": "2024-05-31T12:36:56Z",
+        "title": "Testing insert fucntionality2",
+        "content": "Test insert 0017"
     }
-    response = accessElastic.insert_document("10.0.13.3", "example", "M8mmu48BV3C7FM5ly935", document_body)
+    response = accessElastic.insert_document("10.0.13.3", "example", "", document_body)
     print(response)
 
 
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     #contract_address = "0xBF5B6ED6c1D001b9E151053872B89c6ba36A09eA"
     #contract_result = test_contract_exist(contract_address)
     #test_store_and_retrieve_value_from_contract()
-    setup.setup()
+    #setup.setup()
     #secure_integrity.create_and_store_hash()
-    #verifyIntegrity.verify_integrity("example")
+    verifyIntegrity.verify_integrity("example")
 
