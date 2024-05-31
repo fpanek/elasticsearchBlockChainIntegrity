@@ -6,7 +6,7 @@ import accessEtherum
 import config
 import createChecksum
 from web3 import Web3
-
+import accessElastic
 
 logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
 
@@ -23,13 +23,58 @@ def load_contract(contract_address, abi_path):
         abi = json.load(abi_file)
     return w3.eth.contract(address=contract_address, abi=abi)
 
+def query_specific_index_and_id(ip, index, _id):
+    body = {
+        "query": {
+            "bool": {
+                "must": [
+                    {"term": {"_id": _id}}
+                ]
+            }
+        },
+        "size": 1  # Limit the number of search results to only one document
+    }
+    response = accessElastic.return_result_from_database_using_body(ip, body, index)
+    return response
 
 def verify_integrity(index_name):
     contract = load_contract(Web3.to_checksum_address(config.existing_contract_address), "abi.json")
-    _id = "QcnQzY8BV3C7FM5l190G"
-    result = accessEtherum.get_checksum_entry(contract, index_name, _id)
-    logging.debug(f"Found checksum: {result} in index: {index_name} for _id: {_id}")
-    #get_single_checksum_entry(contract, "example", "KcnhtY8BV3C7FM5lft27")
-    #get_all_checksums(contract, index_name)
+    data = accessEtherum.get_all_checksums(contract, index_name)
+    results = []
+    for i in range(len(data[0])):
+        results.append({"_id": data[0][i], "checksum": data[1][i]})
+    blockhain_checksum_id = json.dumps({"results": results}, indent=4)
+    #print(blockhain_checksum_id)
+    blockhain_checksum_id_json = json.loads(blockhain_checksum_id)
+    for item in blockhain_checksum_id_json['results']:
+        _id = item['_id']
+        checksum_blockchain = item['checksum']
+        elastic_result = query_specific_index_and_id("10.0.13.3", "example", _id)
+        if elastic_result['hits']['hits']:  # Check if there are hits
+            first_hit = elastic_result['hits']['hits'][0]['_source']
+            timestamp = first_hit['@timestamp']
+            title = first_hit['title']
+            content = first_hit['content']
+        else:
+            logging.debug("Error decoding document")
+        checksum_elastic = createChecksum.create_checksum(timestamp, title, content)
+        logging.info(f"Checksum Blockchain {checksum_blockchain}; Checksum Elastic: {checksum_elastic}")
+        if checksum_blockchain == checksum_elastic:
+            logging.debug("checksum equal OK")
+        else:
+            logging.error(f"Document {_id} was altered after creating the checksum!")
+
+    #print("elastic result---")
+    #print(elastic_result)
+    #if elastic_result['hits']['hits']:  # Check if there are hits
+    #    first_hit = elastic_result['hits']['hits'][0]['_source']
+    #    timestamp = first_hit['@timestamp']
+    #    title = first_hit['title']
+    #    content = first_hit['content']
+    #else:
+    #    logging.debug("Error decoding document")
+    #checksum_elastic = createChecksum.create_checksum(timestamp, title, content)
+    #print(checksum_elastic)
+
 
 

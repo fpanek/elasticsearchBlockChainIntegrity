@@ -26,6 +26,13 @@ def updating_test_document():
     response = accessElastic.update_document("10.0.13.3", "example", "M8mmu48BV3C7FM5ly935", document_body)
     print(response)
 
+def updating_test_document_some_other_data():
+    document_body = {
+        "content": "tampered data"
+    }
+    response = accessElastic.update_document("10.0.13.3", "example", "QcnQzY8BV3C7FM5l190G", document_body)
+    print(response)
+
 def get_test_result_from_database():
     query = {"bool": {"must_not": [{"exists": {"field": "integrity_checksum_created"}}]}}
     response = accessElastic.return_result_from_database("10.0.13.3", query, "example")
@@ -34,7 +41,7 @@ def get_test_result_from_database():
 
 
 def test_deploy_smart_contract():
-    contract = accessEtherum.compile_and_deploy("SimpleKeyValueStorage.sol")
+    contract = accessEtherum.compile_and_deploy("Name.sol")
     print("Contract deployed at:", contract.address)
 
 def test_contract_exist(contract_address):
@@ -49,6 +56,7 @@ def test_store_and_retrieve_value_from_contract(contract):
 if __name__ == '__main__':
     #insert_test_document()
     #updating_test_document()
+    #updating_test_document_some_other_data()
     #get_test_result_from_database()
     #accessEtherum.iterate_through_all_blocks()
     #test_deploy_smart_contract();
